@@ -1,0 +1,39 @@
+services:
+  db-typeorm:
+    image: postgres
+    container_name: db-typeorm
+    volumes:
+      - db-typeorm-typeorm:/data/postgres
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: typeorm_youtube
+      PGDATA: /data/postgres
+    ports:
+      - '5436:5432'
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  pgadmin_typeorm:
+    container_name: pgadmin_typeorm
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-root@email.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin_typeorm:/var/lib/pgadmin
+    ports:
+      - '${PGADMIN_PORT:-5051}:80'
+    networks:
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  db-typeorm-typeorm:
+  pgadmin_typeorm:
+
+networks:
+  postgres:
+    driver: bridge
